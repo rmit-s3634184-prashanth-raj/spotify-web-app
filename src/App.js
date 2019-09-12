@@ -6,27 +6,33 @@ import Player from "./Player";
 import logo from "./logo.svg";
 import "./App.css";
 
+
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      token: "",
-      items: {
-        album: {
-          images: [{ url: "" }]
-        },
-        name: "",
-        artists: [{ name: "" }],
-        duration_ms:0,
-      },
-      is_playing: "Paused",
-      progress_ms: 0
-    };
-    this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
+      this.state = {
+
+        token: "",
+
+              items: {
+                  album: {
+                      images: [{ url: "" }],
+                      name: "",
+                  },
+                  artists: [{ name: "" }],
+                  duration_ms: 0,                  
+          },
+           
+          is_playing: "Paused",
+          progress_ms: " ",    
+          
+          };
+      this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
+        //this.getAlbumsList = this.getAlbumsList.bind(this);
   }
 
   componentDidMount() {
-    // Set token
+      // Set token
     let _token = hash.access_token;
 
     if (_token) {
@@ -34,7 +40,8 @@ class App extends Component {
       this.setState({
         token: _token
       });
-      this.getCurrentlyPlaying(_token);
+        this.getCurrentlyPlaying(_token);
+      //  this.getAlbumsList(_token);
     }
   }
 
@@ -52,10 +59,33 @@ class App extends Component {
           items: data.item,
           is_playing: data.is_playing,
           progress_ms: data.progress_ms,
+          
         });
       }
     });
   }
+
+
+   /* getAlbumsList(token, id) {
+        // Make a call using the token
+
+        $.ajax({
+            url: "https://api.spotify.com/v1/albums/${this,state.items.id}",
+            type: "GET",
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: (data1) => {
+                console.log("data1", data1);
+                this.setState({
+                    name: data1.name,
+                   
+                });
+            }
+        });
+    }   
+    */ 
+
 
   render() {
 
@@ -63,26 +93,41 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           
-          {!this.state.token && (
-            <a
-              className="btn btn--loginApp-link"
-              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                "%20"
-              )}&response_type=token&show_dialog=true`}
+                {!this.state.token && (
+                    <a
+                        className="btn btn--loginApp-link"
+                        href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                            "%20"
+                        )}&response_type=token&show_dialog=true`}
+                        
             >
-              Login to Spotify
+                        <font color="Black">Click To Login to Spotify</font>
+                       
           
             </a>
           )}
-          {this.state.token && (
-            <Player
-              item={this.state.items}
+          {this.state.token && (     
+
+           <Player
+
+              item={this.state.items}      
               is_playing={this.state.is_playing}
-              progress_ms={this.progress_ms}
-            />
-          )}
+              progress_ms={this.state.progress_ms}                  
+                    />
+                )}
+
+                {this.state.token && (
+                    <div>
+                           
+                        <p> {this.state.name}  </p> 
+                        <p> {this.state.items.album.name}  </p> 
+                    </div>
+
+                    
+                )}
         </header>
-      </div>
+        </div>
+ 
     );
   }
 }
